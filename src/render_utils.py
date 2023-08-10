@@ -1,6 +1,7 @@
 import moderngl
 import struct
 
+
 def create_shader_program(ctx, vertex_shader, fragment_shader):
     """Creates and returns a shader program."""
     return ctx.program(
@@ -8,7 +9,9 @@ def create_shader_program(ctx, vertex_shader, fragment_shader):
         fragment_shader=fragment_shader
     )
 
-def render_coords(ctx, coords, program, scale, min_lon, min_lat, DRAW_WIDTH, DRAW_HEIGHT, MARGIN, IMAGE_WIDTH, IMAGE_HEIGHT, XAX_SHIFT, YAX_SHIFT, VERT_STRETCH):
+
+def render_coords(ctx, coords, program, scale, min_lon, min_lat, DRAW_WIDTH, DRAW_HEIGHT, MARGIN, IMAGE_WIDTH,
+                  IMAGE_HEIGHT, XAX_SHIFT, YAX_SHIFT, VERT_STRETCH):
     """Function to render coordinates with a given shader program."""
     transformed_vertices = [
         (
