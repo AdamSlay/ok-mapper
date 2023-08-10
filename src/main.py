@@ -9,7 +9,7 @@ from constants import IMAGE_WIDTH, IMAGE_HEIGHT
 
 def main():
     # Initialize ModernGL context
-    ctx = moderngl.create_standalone_context()
+    context = moderngl.create_standalone_context()
 
     # Load the shapefile
     shapes = load_shapefile("../data/okcounties.shp")
@@ -20,16 +20,16 @@ def main():
 
     # Framebuffers initialization
     samples = 4
-    ms_texture = ctx.texture((IMAGE_WIDTH, IMAGE_HEIGHT), 4, samples=samples)
-    ms_fbo = ctx.framebuffer(color_attachments=[ms_texture])
-    fbo = ctx.framebuffer(color_attachments=[ctx.texture((IMAGE_WIDTH, IMAGE_HEIGHT), 4)])
+    multisample_texture = context.texture((IMAGE_WIDTH, IMAGE_HEIGHT), 4, samples=samples)
+    multisample_framebuffer = context.framebuffer(color_attachments=[multisample_texture])
+    main_framebuffer = context.framebuffer(color_attachments=[context.texture((IMAGE_WIDTH, IMAGE_HEIGHT), 4)])
 
-    ms_fbo.use()
-    ctx.clear(1.0, 1.0, 1.0, 1.0)
+    multisample_framebuffer.use()
+    context.clear(1.0, 1.0, 1.0, 1.0)
 
     # Shader programs
-    prog_grey = create_shader_program(
-        ctx,
+    shader_grey = create_shader_program(
+        context,
         vertex_shader='''
             #version 330
             in vec2 in_vert;
@@ -46,8 +46,8 @@ def main():
         '''
     )
 
-    prog_black = create_shader_program(
-        ctx,
+    shader_black = create_shader_program(
+        context,
         vertex_shader='''
             #version 330
             in vec2 in_vert;
@@ -68,22 +68,22 @@ def main():
     for shp in shapes:
         if shp.geom_type == 'MultiPolygon':
             for polygon in shp.geoms:
-                render_coords(ctx, polygon.exterior.coords, prog_grey, scale, min_lon, min_lat)
+                render_coords(context, polygon.exterior.coords, shader_grey, scale, min_lon, min_lat)
         else:
-            render_coords(ctx, shp.exterior.coords, prog_grey, scale, min_lon, min_lat)
+            render_coords(context, shp.exterior.coords, shader_grey, scale, min_lon, min_lat)
 
     if state_boundary.geom_type == 'MultiPolygon':
         for polygon in state_boundary.geoms:
-            render_coords(ctx, polygon.exterior.coords, prog_black, scale, min_lon, min_lat)
+            render_coords(context, polygon.exterior.coords, shader_black, scale, min_lon, min_lat)
     else:
-        render_coords(ctx, state_boundary.exterior.coords, prog_black, scale, min_lon, min_lat)
+        render_coords(context, state_boundary.exterior.coords, shader_black, scale, min_lon, min_lat)
 
     # Resolve multisample framebuffer to standard framebuffer
-    ctx.copy_framebuffer(dst=fbo, src=ms_fbo)
+    context.copy_framebuffer(dst=main_framebuffer, src=multisample_framebuffer)
 
     # Save the result
-    pixels = fbo.read(components=4)
-    image = Image.frombytes('RGBA', fbo.size, pixels).transpose(Image.FLIP_TOP_BOTTOM)
+    pixels = main_framebuffer.read(components=4)
+    image = Image.frombytes('RGBA', main_framebuffer.size, pixels).transpose(Image.FLIP_TOP_BOTTOM)
     image.save('../data/output.png')
 
 
