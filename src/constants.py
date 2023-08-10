@@ -1,0 +1,12 @@
+# Constants
+# Image settings
+IMAGE_WIDTH = 770
+IMAGE_HEIGHT = 420
+MARGIN = 50
+DRAW_WIDTH = IMAGE_WIDTH - 2 * MARGIN
+DRAW_HEIGHT = IMAGE_HEIGHT - 2 * MARGIN
+
+# Geographical transformations
+VERT_STRETCH = 1.08
+XAX_SHIFT = 0.08
+YAX_SHIFT = 0.05

@@ -1,6 +1,7 @@
 import shapefile
 from shapely.geometry import shape as shapely_shape
-from shapely.ops import unary_union
+
+from constants import DRAW_WIDTH, DRAW_HEIGHT
 
 
 def load_shapefile(file_path):
@@ -9,7 +10,7 @@ def load_shapefile(file_path):
     return [shapely_shape(shp.__geo_interface__) for shp in sf.shapes()]
 
 
-def calculate_scaling(shapes, draw_width, draw_height):
+def calculate_scaling(shapes):
     """Computes the scaling factors based on provided shapes."""
 
     all_points = []
@@ -26,8 +27,8 @@ def calculate_scaling(shapes, draw_width, draw_height):
     min_lat = min([y for x, y in all_points])
     max_lat = max([y for x, y in all_points])
 
-    scale_x = draw_width / (max_lon - min_lon)
-    scale_y = draw_height / (max_lat - min_lat)
+    scale_x = DRAW_WIDTH / (max_lon - min_lon)
+    scale_y = DRAW_HEIGHT / (max_lat - min_lat)
 
     return min(scale_x, scale_y) * 0.95, min_lon, min_lat
 
