@@ -3,7 +3,7 @@ from PIL import Image
 
 from constants import IMAGE_WIDTH, IMAGE_HEIGHT
 from csv_utils import load_csv
-from render_utils import render_all_shapes
+from render_utils import render_all_shapes, render_points
 from shapefile_utils import load_shapefile
 
 
@@ -26,6 +26,7 @@ def main():
     context.clear(1.0, 1.0, 1.0, 1.0)
 
     render_all_shapes(context, county_shapes, state_border)
+    render_points(context, data, county_shapes)
 
     # Resolve multisample framebuffer to standard framebuffer
     context.copy_framebuffer(dst=main_framebuffer, src=multisample_framebuffer)

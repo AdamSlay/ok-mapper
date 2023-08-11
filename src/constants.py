@@ -2,11 +2,11 @@
 # Image settings
 IMAGE_WIDTH = 770
 IMAGE_HEIGHT = 420
-MARGIN = 100  # 50px on each side
-DRAW_WIDTH = IMAGE_WIDTH - MARGIN
-DRAW_HEIGHT = IMAGE_HEIGHT - MARGIN
+MARGIN = 50  # 50px on each side
+DRAW_WIDTH = IMAGE_WIDTH - 2 * MARGIN
+DRAW_HEIGHT = IMAGE_HEIGHT - 2 * MARGIN
 
 # Geographical transformations
-VERT_STRETCH = 1.08
-XAX_SHIFT = 0.08
-YAX_SHIFT = 0.05
+VERT_STRETCH = 1.08  # stretch the y-axis by this amount
+XAX_SHIFT = 0.08  # shift the x-axis to the right by this amount
+YAX_SHIFT = 0.05  # shift the y-axis up by this amount
