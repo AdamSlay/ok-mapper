@@ -10,9 +10,9 @@ def main():
     # Initialize ModernGL context
     context = moderngl.create_standalone_context()
 
-    # Load the shapefile and data
+    # Load the shapefiles and data
     county_shapes = load_shapefile("../data/okcounties.shp")
-    state_boundary = load_shapefile("../data/okoutline.shp")
+    state_border = load_shapefile("../data/okoutline.shp")
 
     # Framebuffers initialization, multisample allows for antialiasing
     samples = 4
@@ -23,7 +23,7 @@ def main():
     multisample_framebuffer.use()
     context.clear(1.0, 1.0, 1.0, 1.0)
 
-    render_all_shapes(context, county_shapes, state_boundary)
+    render_all_shapes(context, county_shapes, state_border)
 
     # Resolve multisample framebuffer to standard framebuffer
     context.copy_framebuffer(dst=main_framebuffer, src=multisample_framebuffer)

@@ -5,7 +5,7 @@ from constants import IMAGE_WIDTH, IMAGE_HEIGHT, DRAW_WIDTH, DRAW_HEIGHT, MARGIN
 from shapefile_utils import calculate_scaling
 
 
-def render_all_shapes(context, shapes, state_boundary):
+def render_all_shapes(context, counties, border):
     # Shader programs
     shader_grey = create_shader_program(
         context,
@@ -44,17 +44,17 @@ def render_all_shapes(context, shapes, state_boundary):
     )
 
     # Calculate scaling and bounds
-    scale_factor, min_lon, min_lat = calculate_scaling(shapes)
+    scale_factor, min_lon, min_lat = calculate_scaling(counties)
 
     # Render counties and boundary
-    for shp in shapes:
+    for shp in counties:
         if shp.geom_type == 'MultiPolygon':
             for polygon in shp.geoms:
                 render_coords(context, polygon.exterior.coords, shader_grey, scale_factor, min_lon, min_lat)
         else:
             render_coords(context, shp.exterior.coords, shader_grey, scale_factor, min_lon, min_lat)
 
-    for shp in state_boundary:
+    for shp in border:
         if shp.geom_type == 'MultiPolygon':
             for polygon in shp.geoms:
                 render_coords(context, polygon.exterior.coords, shader_black, scale_factor, min_lon, min_lat)
