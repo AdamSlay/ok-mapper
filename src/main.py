@@ -12,9 +12,9 @@ def main():
     context = moderngl.create_standalone_context()
 
     # Load the shapefiles and data
-    county_shapes = load_shapefile("../data/okcounties.shp")
-    state_border = load_shapefile("../data/okoutline.shp")
-    data = load_csv("../data/latest_tair.csv")
+    county_shapes = load_shapefile("../etc/shapes/okcounties.shp")
+    state_border = load_shapefile("../etc/shapes/okoutline.shp")
+    data = load_csv("../data/latest_tair.csv")  # stid,time,elev,lat,lon,tair
 
     # Framebuffers initialization, multisample allows for antialiasing
     samples = 4
