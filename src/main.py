@@ -1,6 +1,5 @@
 import moderngl
 from PIL import Image
-from shapely.ops import unary_union
 
 from constants import IMAGE_WIDTH, IMAGE_HEIGHT
 from render_utils import render_all_shapes
@@ -11,13 +10,11 @@ def main():
     # Initialize ModernGL context
     context = moderngl.create_standalone_context()
 
-    # Load the shapefile
-    shapes = load_shapefile("../data/okcounties.shp")
+    # Load the shapefile and data
+    county_shapes = load_shapefile("../data/okcounties.shp")
+    state_boundary = load_shapefile("../data/okoutline.shp")
 
-    # Create a single polygon from all exterior boundaries thus creating a border around the state
-    state_boundary = unary_union(shapes)
-
-    # Framebuffers initialization
+    # Framebuffers initialization, multisample allows for antialiasing
     samples = 4
     multisample_texture = context.texture((IMAGE_WIDTH, IMAGE_HEIGHT), 4, samples=samples)
     multisample_framebuffer = context.framebuffer(color_attachments=[multisample_texture])
@@ -26,7 +23,7 @@ def main():
     multisample_framebuffer.use()
     context.clear(1.0, 1.0, 1.0, 1.0)
 
-    render_all_shapes(context, shapes, state_boundary)
+    render_all_shapes(context, county_shapes, state_boundary)
 
     # Resolve multisample framebuffer to standard framebuffer
     context.copy_framebuffer(dst=main_framebuffer, src=multisample_framebuffer)

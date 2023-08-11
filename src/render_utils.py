@@ -54,11 +54,12 @@ def render_all_shapes(context, shapes, state_boundary):
         else:
             render_coords(context, shp.exterior.coords, shader_grey, scale_factor, min_lon, min_lat)
 
-    if state_boundary.geom_type == 'MultiPolygon':
-        for polygon in state_boundary.geoms:
-            render_coords(context, polygon.exterior.coords, shader_black, scale_factor, min_lon, min_lat)
-    else:
-        render_coords(context, state_boundary.exterior.coords, shader_black, scale_factor, min_lon, min_lat)
+    for shp in state_boundary:
+        if shp.geom_type == 'MultiPolygon':
+            for polygon in shp.geoms:
+                render_coords(context, polygon.exterior.coords, shader_black, scale_factor, min_lon, min_lat)
+        else:
+            render_coords(context, shp.exterior.coords, shader_black, scale_factor, min_lon, min_lat)
     return
 
 
