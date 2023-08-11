@@ -2,6 +2,7 @@ import moderngl
 from PIL import Image
 
 from constants import IMAGE_WIDTH, IMAGE_HEIGHT
+from csv_utils import load_csv
 from render_utils import render_all_shapes
 from shapefile_utils import load_shapefile
 
@@ -13,6 +14,7 @@ def main():
     # Load the shapefiles and data
     county_shapes = load_shapefile("../data/okcounties.shp")
     state_border = load_shapefile("../data/okoutline.shp")
+    data = load_csv("../data/latest_tair.csv")
 
     # Framebuffers initialization, multisample allows for antialiasing
     samples = 4
