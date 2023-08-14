@@ -30,7 +30,6 @@ def render_all_shapes(context, counties, border):
                 render_coords(context, polygon.exterior.coords, shader_black, scale_factor, min_lon, min_lat)
         else:
             render_coords(context, shp.exterior.coords, shader_black, scale_factor, min_lon, min_lat)
-    return
 
 
 def create_shader_program(context, vertex_shader, fragment_shader):
