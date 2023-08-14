@@ -2,6 +2,7 @@ import csv
 
 
 def load_csv(file_path):
+    """Loads and processes the CSV data file."""
     data = []
     with open(file_path, 'r') as csvfile:
         reader = csv.DictReader(csvfile)
