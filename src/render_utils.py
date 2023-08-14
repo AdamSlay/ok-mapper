@@ -2,9 +2,8 @@ import moderngl
 import numpy as np
 import struct
 
-from constants import IMAGE_WIDTH, IMAGE_HEIGHT, DRAW_WIDTH, DRAW_HEIGHT, MARGIN, VERT_STRETCH, XAX_SHIFT, YAX_SHIFT
+from constants import *
 from shaders import *
-from shapefile_utils import calculate_scaling
 
 
 def render_all_shapes(context, counties, border):
@@ -13,23 +12,20 @@ def render_all_shapes(context, counties, border):
     shader_grey = context.program(vertex_shader=VERTEX_OUTLINE_GREY, fragment_shader=FRAGMENT_OUTLINE_GREY)
     shader_black = context.program(vertex_shader=VERTEX_OUTLINE_BLACK, fragment_shader=FRAGMENT_OUTLINE_BLACK)
 
-    # Calculate scaling and bounds
-    scale_factor, min_lon, min_lat = calculate_scaling(counties)
-
     # Render counties and boundary
     for shp in counties:
         if shp.geom_type == 'MultiPolygon':
             for polygon in shp.geoms:
-                render_coords(context, polygon.exterior.coords, shader_grey, scale_factor, min_lon, min_lat)
+                render_coords(context, polygon.exterior.coords, shader_grey, SCALE_FACTOR, MIN_LON, MIN_LAT)
         else:
-            render_coords(context, shp.exterior.coords, shader_grey, scale_factor, min_lon, min_lat)
+            render_coords(context, shp.exterior.coords, shader_grey, SCALE_FACTOR, MIN_LON, MIN_LAT)
 
     for shp in border:
         if shp.geom_type == 'MultiPolygon':
             for polygon in shp.geoms:
-                render_coords(context, polygon.exterior.coords, shader_black, scale_factor, min_lon, min_lat)
+                render_coords(context, polygon.exterior.coords, shader_black, SCALE_FACTOR, MIN_LON, MIN_LAT)
         else:
-            render_coords(context, shp.exterior.coords, shader_black, scale_factor, min_lon, min_lat)
+            render_coords(context, shp.exterior.coords, shader_black, SCALE_FACTOR, MIN_LON, MIN_LAT)
 
 
 def create_shader_program(context, vertex_shader, fragment_shader):
@@ -110,13 +106,10 @@ def render_points(context, data, counties):
     # Create the shaders
     shader = context.program(vertex_shader=VERTEX_POINT_GREY, fragment_shader=FRAGMENT_POINT_GREY)
 
-    # Calculate scaling and bounds
-    scale_factor, min_lon, min_lat = calculate_scaling(counties)
-
     for station in data:
         lon = station['lon']
         lat = station['lat']
-        transformed_lon, transformed_lat = transform_coordinates(lon, lat, scale_factor, min_lon, min_lat)
+        transformed_lon, transformed_lat = transform_coordinates(lon, lat, SCALE_FACTOR, MIN_LON, MIN_LAT)
 
         circle_data = create_circle_vertex_data(transformed_lon, transformed_lat, 0.005, 32)
 
