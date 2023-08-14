@@ -3,3 +3,4 @@ pytest>=7.4.0
 moderngl~=5.8.2
 Pillow~=10.0.0
 shapely~=2.0.1
+numpy~=1.25.2

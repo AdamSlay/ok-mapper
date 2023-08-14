@@ -3,46 +3,14 @@ import numpy as np
 import struct
 
 from constants import IMAGE_WIDTH, IMAGE_HEIGHT, DRAW_WIDTH, DRAW_HEIGHT, MARGIN, VERT_STRETCH, XAX_SHIFT, YAX_SHIFT
+from shaders import *
 from shapefile_utils import calculate_scaling
 
 
 def render_all_shapes(context, counties, border):
     # Shader programs
-    shader_grey = create_shader_program(
-        context,
-        vertex_shader='''
-            #version 330
-            in vec2 in_vert;
-            void main() {
-                gl_Position = vec4(in_vert, 0.0, 1.0);
-            }
-        ''',
-        fragment_shader='''
-            #version 330
-            out vec4 color;
-            void main() {
-                color = vec4(0.6, 0.6, 0.6, 1.0);
-            }
-        '''
-    )
-
-    shader_black = create_shader_program(
-        context,
-        vertex_shader='''
-            #version 330
-            in vec2 in_vert;
-            void main() {
-                gl_Position = vec4(in_vert, 0.0, 1.0);
-            }
-        ''',
-        fragment_shader='''
-            #version 330
-            out vec4 color;
-            void main() {
-                color = vec4(0.0, 0.0, 0.0, 1.0);
-            }
-        '''
-    )
+    shader_grey = context.program(vertex_shader=VERTEX_OUTLINE_GREY, fragment_shader=FRAGMENT_OUTLINE_GREY)
+    shader_black = context.program(vertex_shader=VERTEX_OUTLINE_BLACK, fragment_shader=FRAGMENT_OUTLINE_BLACK)
 
     # Calculate scaling and bounds
     scale_factor, min_lon, min_lat = calculate_scaling(counties)
@@ -112,24 +80,8 @@ def create_circle_vertex_data(cx, cy, r, segments):
 
 
 def render_points(context, data, counties):
-    VERTEX_SHADER = """
-        #version 330
-        in vec2 in_vert;
-        void main() {
-            gl_Position = vec4(in_vert, 0.0, 1.0);
-        }
-    """
-
-    FRAGMENT_SHADER = """
-        #version 330
-        out vec4 color;
-        void main() {
-            color = vec4(0.6, 0.6, 0.6, 1.0); // Gray color
-        }
-    """
-
     # Create the shaders
-    prog = context.program(vertex_shader=VERTEX_SHADER, fragment_shader=FRAGMENT_SHADER)
+    shader = context.program(vertex_shader=VERTEX_POINT_GREY, fragment_shader=FRAGMENT_POINT_GREY)
 
     # Calculate scaling and bounds
     scale_factor, min_lon, min_lat = calculate_scaling(counties)
@@ -144,7 +96,7 @@ def render_points(context, data, counties):
 
         # Send data to GPU
         vbo = context.buffer(np.array(circle_data, dtype='f4').tobytes())
-        vao = context.simple_vertex_array(prog, vbo, 'in_vert')
+        vao = context.simple_vertex_array(shader, vbo, 'in_vert')
 
         # Render as triangle fan
         vao.render(moderngl.TRIANGLE_FAN)
